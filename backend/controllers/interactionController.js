@@ -1,5 +1,6 @@
 const Interaction = require('../models/Interaction');
 const User = require('../models/User');
+const Match = require('../models/Match');
 
 module.exports = {
     // 1. Create or update interaction (like/dislike)
@@ -99,6 +100,17 @@ module.exports = {
             const likedMeUserIds = likedMe.map(i => i.userId.toString());
             // Only users who both liked and were liked by the current user, and not the current user
             const mutualUserIds = likedUserIds.filter(id => likedMeUserIds.includes(id) && id !== req.user.id);
+
+            // Ensure a Match exists for each mutual pair
+            for (const otherUserId of mutualUserIds) {
+                const userA = req.user.id < otherUserId ? req.user.id : otherUserId;
+                const userB = req.user.id < otherUserId ? otherUserId : req.user.id;
+                let match = await Match.findOne({ userA, userB });
+                if (!match) {
+                    await Match.create({ userA, userB, deletedBy: [] });
+                }
+            }
+
             const users = await User.find({ _id: { $in: mutualUserIds } }).select('name email profilePic');
             res.json({ success: true, users });
         } catch (err) {

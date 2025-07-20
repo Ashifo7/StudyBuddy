@@ -2,6 +2,7 @@ const Message = require('../models/Message');
 const Match = require('../models/Match');
 const User = require('../models/User');
 const mongoose = require('mongoose');
+const Interaction = require('../models/Interaction');
 
 module.exports = {
     // 1. Send a message
@@ -74,6 +75,24 @@ module.exports = {
     // 4. Get all matches for the current user
     getUserMatches: async (req, res) => {
         try {
+            // Find all users the current user liked
+            const myLikes = await Interaction.find({ userId: req.user.id, type: 'like' });
+            const likedUserIds = myLikes.map(i => i.targetUserId.toString());
+            // Find all users who liked the current user
+            const likedMe = await Interaction.find({ targetUserId: req.user.id, type: 'like' });
+            const likedMeUserIds = likedMe.map(i => i.userId.toString());
+            // Only users who both liked and were liked by the current user, and not the current user
+            const mutualUserIds = likedUserIds.filter(id => likedMeUserIds.includes(id) && id !== req.user.id.toString());
+            // Ensure a Match exists for each mutual pair
+            for (const otherUserId of mutualUserIds) {
+                const userA = req.user.id.toString() < otherUserId ? req.user.id.toString() : otherUserId;
+                const userB = req.user.id.toString() < otherUserId ? otherUserId : req.user.id.toString();
+                let match = await Match.findOne({ userA, userB });
+                if (!match) {
+                    await Match.create({ userA, userB, deletedBy: [] });
+                }
+            }
+            // Now fetch all matches for the current user
             const matches = await Match.find({
                 $and: [
                     { $or: [ { userA: req.user.id }, { userB: req.user.id } ] },

@@ -108,6 +108,10 @@ const userSchema = new mongoose.Schema({
   profileComplete: {
     type: Boolean,
     default: false
+  },
+  publicKey: {
+    type: String,
+    required: false
   }
 }, {
   timestamps: true,

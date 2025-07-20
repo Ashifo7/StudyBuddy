@@ -21,6 +21,7 @@ router.get('/google/callback', passport.authenticate('google', { session: false,
 
 
 // Protected routes
+router.put('/me/public-key', requireAuth, userController.setPublicKey);
 router.get('/me', requireAuth, userController.getCurrentUser);
 router.get('/', requireAuth, userController.listUsers);
 router.put('/me', requireAuth, userController.updateProfile);
@@ -29,6 +30,7 @@ router.put('/me/preferences', requireAuth, userController.updatePreferences);
 router.put('/me/status', requireAuth, userController.updateStatus);
 router.put('/complete-profile', requireAuth, userController.completeProfile);
 router.post('/me/profile-pic/upload', requireAuth, upload.single('profilePic'), userController.uploadProfilePicture);
+
 // 🆕 Flexible update route
 router.patch('/me/any', requireAuth, userController.updateAnyFields);
 

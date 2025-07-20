@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import ContinueWithGoogle from './ContinueWithGoogle';
+import { ensureUserKeyPair } from './keyManager';
 
 export default function Signup() {
   const [form, setForm] = useState({
@@ -75,6 +76,7 @@ export default function Signup() {
       const data = await res.json();
       if (!data.success) throw new Error(data.error || 'OTP verification failed');
       localStorage.setItem('token', data.token);
+      await ensureUserKeyPair(data.token);
       navigate('/profile-complete');
     } catch (err) {
       setError(err.message);

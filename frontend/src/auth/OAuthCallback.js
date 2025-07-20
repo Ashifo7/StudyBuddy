@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ensureUserKeyPair } from './keyManager';
 
 export default function OAuthCallback() {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ export default function OAuthCallback() {
     const error = params.get('error');
     if (token) {
       localStorage.setItem('token', token);
+      ensureUserKeyPair(token);
       navigate('/profile-complete');
     } else if (error === 'email_exists') {
       navigate('/login?error=email_exists');

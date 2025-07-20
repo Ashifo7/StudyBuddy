@@ -478,5 +478,24 @@ module.exports = {
         } catch (err) {
             res.status(500).json({ success: false, error: err.message });
         }
+    },
+
+    // Set or update public key for E2EE
+    setPublicKey: async (req, res) => {
+        try {
+            const { publicKey } = req.body;
+            if (!publicKey) {
+                return res.status(400).json({ success: false, error: 'publicKey is required.' });
+            }
+            const user = await User.findByIdAndUpdate(
+                req.user.id,
+                { publicKey },
+                { new: true, runValidators: true }
+            ).select('-passwordHash');
+            if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+            res.json({ success: true, user });
+        } catch (err) {
+            res.status(500).json({ success: false, error: err.message });
+        }
     }
 };

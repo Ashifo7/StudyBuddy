@@ -12,6 +12,7 @@ const cloudinary = require('cloudinary').v2;
 const rateLimit = require('express-rate-limit');
 const http = require('http');
 const path = require('path');
+const EtoEMessage = require('./models/EtoE');
 
 // -------------------------------
 // 🔧 Configuration Imports
@@ -128,94 +129,48 @@ if (process.env.NODE_ENV === 'development') {
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
 
-    // User comes online
     socket.on('user_online', (userId) => {
-        socket.data.userId = userId;
-        onlineUsers.set(userId, socket.id);
-        io.emit('user_status', { userId, status: 'online' });
+        console.log('Registering user as online:', userId, 'socket.id:', socket.id);
+        onlineUsers.set(String(userId), socket.id);
+        console.log('Current onlineUsers map:', Array.from(onlineUsers.entries()));
     });
 
-    // Chat message handling
-    socket.on('send_message', async (messageData) => {
-        const recipientSocket = onlineUsers.get(messageData.receiverId);
-        if (recipientSocket) {
-            io.to(recipientSocket).emit('receive_message', messageData);
-        }
-    });
-
-    // Typing indicators
-    socket.on('typing_start', (data) => {
-        const recipientSocket = onlineUsers.get(data.receiverId);
-        if (recipientSocket) {
-            io.to(recipientSocket).emit('typing_indicator', {
-                userId: data.userId,
-                status: 'typing'
+    // E2EE chat message handling
+    socket.on('send_e2e_message', async (messageData) => {
+        // console.log('Backend received send_e2e_message:', messageData);
+        // messageData should include: matchId, senderId, receiverId, encryptedMessage, aesKeyForSender, aesKeyForReceiver, iv
+        try {
+            const { matchId, senderId, receiverId, encryptedMessage, aesKeyForSender, aesKeyForReceiver, iv } = messageData;
+            if (!matchId || !senderId || !receiverId || !encryptedMessage || !aesKeyForSender || !aesKeyForReceiver || !iv) {
+                socket.emit('e2e_error', { error: 'Missing required fields' });
+                return;
+            }
+            // Save to DB
+            const savedMsg = await EtoEMessage.create({
+                matchId,
+                senderId,
+                receiverId,
+                encryptedMessage,
+                aesKeyForSender,
+                aesKeyForReceiver,
+                iv,
+                timestamp: new Date()
             });
+            // Emit to receiver if online
+            const recipientSocket = onlineUsers.get(receiverId.toString());
+            if (recipientSocket) {
+                console.log('send message to user');
+
+                io.to(recipientSocket).emit('receive_e2e_message', savedMsg);
+            }
+            // Optionally, emit to sender for confirmation
+            socket.emit('e2e_message_sent', savedMsg);
+        } catch (err) {
+            socket.emit('e2e_error', { error: err.message });
         }
     });
 
-    // Video call signaling
-    socket.on('video_call_offer', (data) => {
-        const recipientSocket = onlineUsers.get(data.receiverId);
-        if (recipientSocket) {
-            io.to(recipientSocket).emit('video_call_offer', {
-                offer: data.offer,
-                callerId: data.callerId
-            });
-        }
-    });
-
-    socket.on('video_call_answer', (data) => {
-        const callerSocket = onlineUsers.get(data.callerId);
-        if (callerSocket) {
-            io.to(callerSocket).emit('video_call_answer', {
-                answer: data.answer,
-                answererId: data.answererId
-            });
-        }
-    });
-
-    socket.on('ice_candidate', (data) => {
-        const recipientSocket = onlineUsers.get(data.recipientId);
-        if (recipientSocket) {
-            io.to(recipientSocket).emit('ice_candidate', {
-                candidate: data.candidate,
-                senderId: data.senderId
-            });
-        }
-    });
-
-    // Study session events
-    socket.on('join_study_session', (sessionId) => {
-        const roomId = `study_${sessionId}`;
-        socket.join(roomId);
-        
-        // Track active sessions
-        if (!activeStudySessions.has(sessionId)) {
-            activeStudySessions.set(sessionId, new Set());
-        }
-        activeStudySessions.get(sessionId).add(socket.data.userId);
-
-        // Emit join event
-        io.to(roomId).emit('user_joined_study', {
-            userId: socket.data.userId,
-            sessionId,
-            participantCount: activeStudySessions.get(sessionId).size
-        });
-
-        // Handle study session specific events
-        socket.on('study_session_activity', (data) => {
-            io.to(roomId).emit('study_update', {
-                ...data,
-                userId: socket.data.userId
-            });
-        });
-
-        // Cleanup when leaving session
-        socket.on('leave_study_session', () => {
-            leaveStudySession(socket, sessionId);
-        });
-    });
+   
 
     // Function to handle leaving study session
     const leaveStudySession = (socket, sessionId) => {
@@ -325,6 +280,8 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/interactions', require('./routes/interactionRoutes'));
 // Message routes
 app.use('/api/messages', require('./routes/messageRoutes'));
+const e2eMessageRoutes = require('./routes/e2eMessageRoutes');
+app.use('/api/e2e', e2eMessageRoutes);
 // TODO: Add match and message routes if present
 // app.use('/api/auth', require('./routes/authRoutes'));
 // app.use('/api/matches', require('./routes/matchRoutes'));
