@@ -158,11 +158,11 @@ io.on('connection', (socket) => {
             });
             // Emit to receiver if online
             const recipientSocket = onlineUsers.get(receiverId.toString());
-            if (recipientSocket) {
+        if (recipientSocket) {
                 console.log('send message to user');
 
                 io.to(recipientSocket).emit('receive_e2e_message', savedMsg);
-            }
+        }
             // Optionally, emit to sender for confirmation
             socket.emit('e2e_message_sent', savedMsg);
         } catch (err) {

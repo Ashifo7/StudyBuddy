@@ -1,100 +1,96 @@
 # StudyBuddy
 
-StudyBuddy is a full-stack web application designed to help students find and connect with study partners based on shared interests, location, and study habits. The platform features user registration (with OTP/email verification), Google OAuth, profile completion, recommendations, swiping (like/dislike), mutual matches, and a chat-ready interface.
+[![Maintainer](https://img.shields.io/badge/maintainer-Rohanlobo15-orange?style=flat-square&logo=github)](https://github.com/Rohanlobo15)
+[![Stars](https://img.shields.io/github/stars/Rohanlobo15/StudyBuddy?style=flat-square)](https://github.com/Rohanlobo15/StudyBuddy/stargazers)
+[![Forks](https://img.shields.io/github/forks/Rohanlobo15/StudyBuddy?style=flat-square)](https://github.com/Rohanlobo15/StudyBuddy/network/members)
+[![Issues](https://img.shields.io/github/issues/Rohanlobo15/StudyBuddy?style=flat-square)](https://github.com/Rohanlobo15/StudyBuddy/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/Rohanlobo15/StudyBuddy?style=flat-square)](https://github.com/Rohanlobo15/StudyBuddy/pulls)
+[![Repo Size](https://img.shields.io/github/repo-size/Rohanlobo15/StudyBuddy?style=flat-square)](https://github.com/Rohanlobo15/StudyBuddy)
+[![Last Commit](https://img.shields.io/github/last-commit/Rohanlobo15/StudyBuddy?style=flat-square)](https://github.com/Rohanlobo15/StudyBuddy/commits/main)
+[![License](https://img.shields.io/github/license/Rohanlobo15/StudyBuddy?style=flat-square)](LICENSE)
+[![Languages](https://img.shields.io/github/languages/top/Rohanlobo15/StudyBuddy?style=flat-square)](https://github.com/Rohanlobo15/StudyBuddy/search?l=javascript)
 
-## Features
+---
 
-- **User Registration & Login** (Email/OTP, Google OAuth)
-- **Profile Completion** (subjects, location, study time, personal info, preferences)
-- **Profile Picture Upload** (Cloudinary)
-- **Recommendations** (find users with similar interests)
-- **Swipe UI** (like/dislike users, inspired by dating apps)
-- **Mutual Matches** (see users who liked you back)
-- **Filtering** (filter users by subject, language, gender, city, state, study time)
-- **Edit Ratings** (change like/dislike for rated users)
-- **Secure Authentication** (JWT-based)
-- **Admin Features** (ban/unban users)
-- **Ready for Messaging** (chat UI placeholder for matches)
+## 📚 StudyBuddy
 
-## Project Structure
+A modern, real-time, end-to-end encrypted study matching and chat platform. StudyBuddy helps students connect, match, and chat securely based on their study interests, location, and preferences.
 
-```
-study_buddy/
-  backend/      # Node.js/Express/MongoDB API
-  frontend/     # React.js client
-```
+---
 
-### Backend
-- **Node.js + Express**
-- **MongoDB (Mongoose)**
-- **JWT Authentication**
-- **Cloudinary for image uploads**
-- **RESTful API**
+## 🚀 Features
 
-#### Main Endpoints
-- `/api/users/register` - Register with OTP
-- `/api/users/login` - Login
-- `/api/users/me` - Get current user
-- `/api/users/recommendations` - Get recommended users
-- `/api/interactions` - Like/dislike users
-- `/api/interactions/my-mutual` - Get mutual matches
-- ...and more (see `backend/routes/`)
+- 🔒 **End-to-End Encrypted Chat** (AES-GCM + RSA-OAEP)
+- 🧑‍🎓 **User Matching & Recommendations**
+- 🏷️ **Profile Customization**
+- 🌐 **Google OAuth & JWT Authentication**
+- 📦 **RESTful API (Node.js, Express, MongoDB)**
+- ⚡ **Real-time Messaging (Socket.io)**
+- ☁️ **Cloudinary Profile Pictures**
+- 📧 **Email OTP Verification**
+- 🗺️ **Location-based Filtering**
+- 🖥️ **Modern React Frontend**
 
-### Frontend
-- **React.js**
-- **Modern, minimalist UI**
-- **Routing with react-router**
-- **Profile, Home, Recommendations, Matches pages**
-- **Responsive and mobile-friendly**
+---
 
-## Setup Instructions
+## 🛠️ Tech Stack
 
-### Prerequisites
-- Node.js (v16+ recommended)
-- npm or yarn
-- MongoDB (local or Atlas)
-- Cloudinary account (for image uploads)
+| Frontend      | Backend         | Database   | Realtime   | Auth         | Storage     |
+|---------------|----------------|------------|------------|--------------|-------------|
+| React.js      | Node.js        | MongoDB    | Socket.io  | JWT, OAuth   | Cloudinary  |
+| Web Crypto API| Express.js     | Mongoose   |            | Passport.js  |             |
 
-### 1. Clone the repository
-```
+---
+
+## 📦 Installation
+
+```bash
 git clone https://github.com/Rohanlobo15/StudyBuddy.git
 cd StudyBuddy
-```
-
-### 2. Backend Setup
-```
+# Backend
 cd backend
 npm install
-# Create a .env file with the following variables:
-# MONGO_URI=your_mongodb_uri
-# JWT_SECRET=your_jwt_secret
-# JWT_EXPIRE=7d
-# SMTP_HOST=your_smtp_host
-# SMTP_PORT=your_smtp_port
-# SMTP_USER=your_smtp_user
-# SMTP_PASSWORD=your_smtp_password
-# ADMIN_REGISTRATION_CODE=your_admin_code
-# CLOUDINARY_CLOUD_NAME=your_cloud_name
-# CLOUDINARY_API_KEY=your_api_key
-# CLOUDINARY_API_SECRET=your_api_secret
-# CLIENT_URL=http://localhost:3000
-npm start
-```
-
-### 3. Frontend Setup
-```
+# Frontend
 cd ../frontend
 npm install
-# (Optional) Edit package.json proxy if backend runs on a different port
-npm start
 ```
 
-### 4. Usage
-- Visit `http://localhost:3000` in your browser.
-- Register, complete your profile, and start finding study buddies!
+---
 
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+## 🏁 Getting Started
 
-## License
-[MIT](LICENSE) 
+1. Set up your `.env` files for both backend and frontend (see `.env.example` if available).
+2. Start backend:  
+   ```bash
+   cd backend
+   npm start
+   ```
+3. Start frontend:  
+   ```bash
+   cd frontend
+   npm start
+   ```
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👤 Maintainer
+
+- [Rohan Lobo](https://github.com/Rohanlobo15)
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+## ⭐️ Show your support
+
+Give a ⭐️ if this project helped you! 
