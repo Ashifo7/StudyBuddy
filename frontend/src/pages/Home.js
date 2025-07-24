@@ -194,6 +194,8 @@ export default function Home() {
                   >
                     <option value="">Any language</option>
                     {languageOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    )
+                    }
                   </select>
                 </div>
                 
@@ -206,6 +208,8 @@ export default function Home() {
                   >
                     <option value="">Any gender</option>
                     {genderOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    )
+                    }
                   </select>
                 </div>
                 
@@ -292,6 +296,7 @@ export default function Home() {
                     <h2 className="text-xl font-semibold text-gray-900">{current.name}</h2>
                     <div className="flex items-center justify-center space-x-2 text-sm text-gray-600 mt-1">
                       {current.personalInfo?.age && <span>{current.personalInfo.age} years</span>}
+                      }
                       {current.personalInfo?.gender && (
                         <>
                           <span>•</span>
@@ -400,6 +405,7 @@ export default function Home() {
                         <h3 className="font-medium text-gray-900">{user.name}</h3>
                         <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
                           {user.personalInfo?.age && <span>{user.personalInfo.age} years</span>}
+                          }
                           {user.personalInfo?.gender && (
                             <>
                               <span>•</span>
