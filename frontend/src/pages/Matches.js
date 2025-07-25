@@ -117,11 +117,11 @@ export default function Matches() {
   const selectedMatchRef = useRef(null);
   const socketRef = useRef(null);
   const userIdRef = useRef(null);
-
+  
   useEffect(() => {
     selectedMatchRef.current = selectedMatch;
   }, [selectedMatch]);
-
+  
   // Connect to socket.io
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -130,7 +130,7 @@ export default function Matches() {
     socketRef.current = socket;
 
     // Log all socket events for debugging
-    socket.onAny((event, ...args) => {
+    socket.on((event, ...args) => {
       console.log('Socket event:', event, args);
     });
 
@@ -172,6 +172,15 @@ export default function Matches() {
     });
     return () => socket.disconnect();
   }, [privateKeyJwk]);
+
+  useEffect(() => {
+    const socket = socketRef.current;
+    const myId = userIdRef.current;
+    if (socket && socket.connected && myId) {
+      console.log('Emitting user_online (effect):', myId);
+      socket.emit('user_online', myId);
+    }
+  }, [privateKeyJwk, matches]);
 
   // Fetch matches and user info
   useEffect(() => {
