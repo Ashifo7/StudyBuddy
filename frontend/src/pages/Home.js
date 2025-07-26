@@ -228,6 +228,8 @@ export default function Home() {
                   >
                     <option value="">Any language</option>
                     {languageOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    )
+                    }
                   </select>
                 </div>
                 
@@ -240,6 +242,8 @@ export default function Home() {
                   >
                     <option value="">Any gender</option>
                     {genderOptions.map(opt => <option key={opt} value={opt} className="capitalize">{opt}</option>)}
+                    )
+                    }
                   </select>
                 </div>
                 
@@ -489,6 +493,7 @@ export default function Home() {
                         <h3 className="font-semibold text-secondary-900">{user.name}</h3>
                         <div className="flex items-center justify-center space-x-2 text-sm text-secondary-600">
                           {user.personalInfo?.age && <span>{user.personalInfo.age} years</span>}
+                          }
                           {user.personalInfo?.gender && (
                             <>
                               <span>•</span>

@@ -20,6 +20,7 @@ const Input = ({
         <label className="block text-sm font-semibold text-secondary-700">
           {label}
           {required && <span className="text-danger-500 ml-1">*</span>}
+          }
         </label>
       )}
       
